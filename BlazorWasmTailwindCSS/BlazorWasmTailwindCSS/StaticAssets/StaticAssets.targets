@@ -1,0 +1,32 @@
+﻿<Project>
+
+  <ItemGroup>
+    <StaticAssets Include="$(MSBuildThisFileDirectory)**" Exclude="$(MSBuildThisFileDirectory)node_modules\**" />
+    <UpToDateCheckInput Include="@(StaticAssets)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+      <StaticCSSPath>css\main.css</StaticCSSPath>
+  </PropertyGroup>
+  
+  <!-- If package-lock.json has changed, perform an NPM install -->
+  <Target Name="NpmInstall"
+          Inputs="$(MSBuildThisFileDirectory)package-lock.json"
+          Outputs="$(BaseIntermediateOutputPath)package-lock.json">
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec Command="npm install" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)package-lock.json"
+          DestinationFolder="$(BaseIntermediateOutputPath)"
+          SkipUnchangedFiles="true"/>
+  </Target>
+
+  <!-- If any source file in this dir or below has changed, perform a Webpack build -->
+  <Target Name="BuildStaticAssets"
+          DependsOnTargets="NpmInstall"
+          BeforeTargets="CoreBuild"
+          Inputs="@(StaticAssets)"
+          Outputs="$(MSBuildThisFileDirectory)..\wwwroot\$(StaticCSSPath)">
+      <Exec Command="npm run build:$(Configuration)" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+  </Target>
+
+</Project>

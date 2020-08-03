@@ -1,0 +1,32 @@
+﻿app {
+    @apply flex flex-col relative;
+}
+
+.top-row {
+    @apply flex items-center h-12;
+}
+
+.main {
+    @apply flex-1;
+}
+
+    .main .top-row {
+        @apply bg-gray-100 border-b border-solid border-gray-300 justify-end;
+    }
+
+        .main .top-row > a, .main .top-row .btn-link {
+            @apply whitespace-no-wrap ml-6;
+        }
+
+        .main .top-row a:first-child {
+            @apply overflow-hidden;
+            text-overflow: ellipsis;
+        }
+
+.sidebar {
+    @apply bg-indigo-800;
+}
+
+    .sidebar .top-row {
+        @apply bg-indigo-900;
+    }
